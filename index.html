@@ -1,0 +1,445 @@
+<!--
+Name: Roshan Sahu
+Assignment: Final Project
+Date: Wednesday Friday November 9th, 2018
+Course: Mobile App Development
+Description: This is a mobile app that allows a viewer to view sports information
+-->
+<!-- Project - Roshan Sahu -->
+<!DOCTYPE html>
+<htmL>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roshan Sahu - Final Project</title>
+
+    <!-- jQuery Mobile Libraries -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <!-- Connecting to the Google API -->
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3&sensor=false&language=en"></script>
+    <script src="data/JSON.json" rel="javascript"></script>
+    <!-- Connecting to the js-->
+    <script src="js/JSON.js" rel="javascript"></script>
+    <!-- Connecting to the css -->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- Connecting to charts.js -->
+    <script src="js/Chart.js" rel="javascript"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+    <!-- NBA Stats Graph -->
+
+    <script>
+        window.onload = function () {
+	
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	
+	title:{
+		text:"Number of Games Won (2017-18 Season)"
+	},
+	axisX:{
+		interval: 1
+	},
+	axisY2:{
+		interlacedColor: "rgba(1,77,101,.2)",
+		gridColor: "rgba(1,77,101,.1)",
+		title: "Number of Wins"
+	},
+	data: [{
+		type: "bar",
+		name: "companies",
+		axisYType: "secondary",
+		color: "#014D65",
+		dataPoints: [
+			{ y: 59, label: "Raptors" },
+			{ y: 55, label: "Celtics" },
+			{ y: 52, label: "76ers" },
+			{ y: 50, label: "Cavaliers" },
+			{ y: 48, label: "Pacers" },
+			{ y: 44, label: "Heart" },
+			{ y: 44, label: "Bucks" }
+		]
+	}]
+});
+chart.render();            
+}
+</script>
+    <!-- Generating the map -->
+    <script>
+        var display, service = new google.maps.DirectionsService(), map;
+				 // object used for calculating directions by a variety of methods of transportation
+				
+				// initialize page when loads			
+		  $(document).on("pageinit", "#Events", function() {
+			 initialize();
+		  });
+				
+		  function initialize() {
+			display = new google.maps.DirectionsRenderer();
+            //Using Sheridan college tralfagar home page
+			var mapCenter = new google.maps.LatLng(43.469117,-79.70017);  
+
+			var myOptions = {
+			  zoom:8,
+			  mapTypeId: google.maps.MapTypeId.ROADMAP,
+			  center: mapCenter
+					}
+
+			map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+					var startFrom = new google.maps.Marker ({
+						map : map,
+						position: mapCenter
+					});	
+					
+			var mapEnd = new google.maps.LatLng(43.6435,-79.085476);	//Air Canada Centre
+					var endAt = new google.maps.Marker ({
+						map : map,
+						position: mapEnd
+					});	
+					
+			display.setMap(map);
+			display.setPanel(document.getElementById("directions"));  
+		  }
+				
+	//---------------------------------------------------------------------------
+
+		  $(document).on('click', '#submit', function(e) {
+			calculateRoute();
+		  });
+
+		  function calculateRoute() {
+			var selectedMode = $("#mode").val(),
+				start = $("#from").val(),
+				end = $("#to").val();						// From entry fields
+
+			if (start == '' || end == '') {
+			  // cannot calculate route - empty field
+			  $("#results").hide();
+			  return;
+			}
+			else {
+			  var request = { origin:start, 
+							destination:end,
+							travelMode: google.maps.DirectionsTravelMode[selectedMode]
+							};
+
+			  service.route(request, function(response, status) {
+							if (status == google.maps.DirectionsStatus.OK) {
+								display.setDirections(response); 
+								$("#results").show();
+							}
+							else {
+								$("#results").hide();
+							}
+			  });
+
+			}
+		  }
+		</script>
+
+</head>
+
+<body>
+    <!-- Introduction Page #1 Begins -->
+    <div data-role="page" id="Introduction">
+        <!-- Header -->
+        <div data-role="header">
+            <h1>SportsApp</h1>
+        </div>
+        <!-- Content Area -->
+        <div data-role="main" class="ui-content">
+            <div class="center">
+                <!-- Explaining the app's purpose -->
+                <h3>Welcome to SportsApp!</h3>
+                <h4>The best app for game scores, players, and updates.</h4>
+            </div>
+            <!-- The only picture on the entry screen -->
+            <img src="images/Sports1.jpg" alt="Sports Intro" width="100%" height="33%">
+            <!-- Asking for the users email and password to 'Log in'. Labels aren't function. Both take user to home screen-->
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" value="" placeholder="Your Name Here" required>
+            <label for="email">Email Address</label>
+            <input type="text" name="email" id="email" value="" placeholder="username@domain.com" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" value="" placeholder="***********" required>
+            <br>
+            <!-- Sign Up and Log In Buttons -->
+            <a href="#HomeScreen2" data-transition="slide" class="ui-btn ui-icon-edit ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b" data-theme="b" id="signUp" onclick="signUp()">Sign Up</a>
+            <a href="#HomeScreen2" data-transition="slide" class="ui-btn ui-icon-check ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b" data-theme="b" id="logIn" onclick="login()">Log In</a>
+            <!-- Sign Up and Log In Functions -->
+            <script>
+                function login() {
+                var name = document.getElementById("name").value;
+                document.getElementById("Welcome").innerHTML = "Welcome Back " + name + "!";
+            }
+                function signUp() {
+                var name = document.getElementById("name").value;
+                document.getElementById("Welcome").innerHTML = "Welcome To The App " + name + "!";
+            }
+        </script>
+        </div>
+        <div data-role="footer">
+            <h1>Design and Prepared by Roshan Sahu</h1>
+        </div>
+    </div>
+    <!-- Introduction Page #1 Begins Ends -->
+    <!-- HomeScreen2 Begins -->
+    <div data-role="page" id="HomeScreen2">
+        <!-- header -->
+        <div data-role="header">
+            <h1>Home</h1>
+        </div>
+        <!-- Content Area -->
+        <div data-role="main" class="ui-content">
+            <!-- The only picture on the home screen -->
+            <h2 id="Welcome" class="center"></h2>
+            <div class="ui-grid-a ui-responsive">
+                <!-- 3 Other Pages to Access: Players, Messages, and Merch -->
+                <div class="ui-block-a"><a href="#PlayerPage" data-transition="slide" class="ui-btn ui-icon-user ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Players</a></div>
+                <div class="ui-block-b"><a href="#Analytics" data-transition="slide" class="ui-btn ui-icon-grid ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Analytics</a></div>
+                <div class="ui-block-c"><a href="#Merch" data-transition="slide" class="ui-btn ui-icon-shop ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Merch</a></div>
+                <div class="ui-block-c"><a href="#Events" data-transition="slide" class="ui-btn ui-icon-calendar ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Events</a></div>
+            </div>
+            <!-- VIdeo plays on autoplay. Muted so it won't freak users out -->
+            <div class="center">
+                <video width="100%" height="33%" controls autoplay loop muted>
+                    <source src="video/Sports.mp4" type="video/mp4">
+                    <source src="video/movie.ogg" type="video/ogg">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <!-- Button To Go Back Home -->
+            <a href="#Introduction" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Back</a>
+
+        </div>
+        <!-- footer -->
+        <div data-role="footer" data-theme="b">
+            <h1>Design and Prepared by Roshan Sahu</h1>
+        </div>
+    </div>
+    <!-- HomeScreen2 Ends Here -->
+    <!-- Players page starts here -->
+    <div data-role="page" id="PlayerPage">
+        <!-- header -->
+        <div data-role="header">
+            <h1 class="center">Players</h1>
+        </div>
+        <!-- Content Area -->
+
+        <div data-role="main" class="ui-content">
+            <h3 class="center">Search to find your favourite player!</h3>
+            <p> Players </p>
+            <!-- A list of all the players in the json file -->
+
+            <ul id="players" data-role="listview" data-filter="true">
+
+            </ul>
+            <br><br>
+            <img src="images/steph.jpg" alt="Steph Curry" width="100%" height="450px">
+            <!-- Button To Go Back Home -->
+            <br>
+            <a href="#HomeScreen2" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Back</a>
+
+        </div>
+        <!-- footer -->
+        <div data-role="footer" data-theme="b">
+            <h1>Design and Prepared by Roshan Sahu</h1>
+        </div>
+    </div>
+    <!-- Players page ends here -->
+    <!-- Details About Players -->
+    <div id="playerDetails" data-role="page">
+        <header data-role="header">
+            <h1>Player Details</h1>
+        </header>
+        <!-- Detailed information about each player -->
+        <section role="main" class="ui-content" id="contactInfo">
+            <h2>Player Detail</h2>
+            <p id="FirstName"></p>
+            <p id="LastName"></p>
+            <p id="Team"></p>
+            <p>Stats</p>
+            <p id="Height"></p>
+            <p id="Weight"></p>
+            <p id="Swag"></p>
+            <img id="Picture" src='' width="100%" height="30%">
+            <a href="#PlayerPage" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Back</a>
+            <a href="#HomeScreen2" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-home ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Home</a>
+        </section>
+        <!-- footer -->
+        <div data-role="footer" data-theme="b">
+            <h1>Design and Prepared by Roshan Sahu</h1>
+        </div>
+        <!-- Player Details Ends-->
+    </div>
+
+    <!-- Merch Page Begins -->
+    <div data-role="page" id="Merch">
+        <!-- Header -->
+        <div data-role="header">
+            <h1>Merch</h1>
+        </div>
+        <!-- Content Area -->
+        <div data-role="main" class="ui-content">
+            <h3 id="Balance" class="center"><u>Your Balance: $500</u></h3>
+            <fieldset>
+
+                <h3>Air Jordans</h3>
+                <h4>Price: $100</h4>
+
+                <img src="images/jordans.jpg" alt="jordans" width="100%" height="200px">
+
+                <label for="sneakers">Quantity</label>
+                <select name="sneakers" id="sneakers">
+                    <option>0</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                </select>
+            </fieldset>
+
+            <button id="demo" onclick="purchaseItems()" data-theme="b">Purchase Items</button>
+            <script>
+                function purchaseItems() {
+                var shoeQuant = document.getElementById("sneakers").value;
+                var shoeSpent = 100 * shoeQuant;
+                var newBalance = 500 - shoeSpent;
+                if (newBalance > 0) {
+                    document.getElementById("Balance").innerHTML = "Your New Balance: $" + newBalance;
+                    $("#Balance").css("background-color", "#0099cc");
+                    $('#Balance').append('<br><i>Congratulations! Your order has been confirmed</i>');
+                } else {
+                    $('#demo').append('- Insufficient Funds');
+                }
+            }
+
+        </script>
+            <input type='button' onclick='location.reload();' value='Refresh Page' data-theme="b" />
+            <a href="#HomeScreen2" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Back</a>
+        </div>
+        <div data-role="footer" data-theme="b">
+            <h1>Design and Prepared by Roshan Sahu</h1>
+        </div>
+    </div>
+    <!-- Merch Page Ends -->
+    <!-- Analytics Page Begins -->
+    <div data-role="page" id="Analytics">
+        <!-- Header -->
+        <div data-role="header">
+            <h1>Analytics</h1>
+        </div>
+        <!-- Content Area -->
+       <div data-role="main" class="ui-content">
+            <h4>NBA Statistics</h4>
+
+            <div id="chartContainer" style="height: 300px; width: 345px;"></div>
+
+            <!-- Fifa Statistics -->
+            <h4>Fifa World Cup Team All Time Statistics</h4>
+            <div class="container">
+
+                <table id="analyticstable" class="display" style="width:100%" border="white" class="center" data-filter="true">
+                    <thead>
+                        <tr>
+                            <th>Team</th>
+                            <th>PTS</th>
+                            <th>MP</th>
+                        </tr>
+                    </thead>
+                    <tbody class="center">
+                        <tr>
+                            <td>Brazil</td>
+                            <td>227</td>
+                            <td>104</td>
+
+                        </tr>
+                        <tr>
+                            <td>Germany</td>
+                            <td>2018</td>
+                            <td>106</td>
+
+                        </tr>
+                        <tr>
+                            <td>Italy</td>
+                            <td>156</td>
+                            <td>83</td>
+                        </tr>
+                        <tr>
+                            <td>Argentina</td>
+                            <td>140</td>
+                            <td>77</td>
+                        </tr>
+                        <tr>
+                            <td>Spain</td>
+                            <td>99</td>
+                            <td>59</td>
+                        </tr>
+                        <tr>
+                            <td>England</td>
+                            <td>98</td>
+                            <td>62</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <a href="#HomeScreen2" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Back</a>
+
+            <div data-role="footer" data-theme="b">
+                <h1>Design and Prepared by Roshan Sahu</h1>
+            </div>
+        </div>
+        <!-- Analytics Page Ends -->
+        <!-- Events Page Begins -->
+
+    </div>
+    <div data-role="page" id="Events">
+        <header data-role="header">
+            <h1>Events</h1>
+        </header>
+        <h4 class="center">Dope! A Toronto Raptors game is in one week.</h4>
+        <div data-role="content">
+
+            <div id="map_canvas" style="height:300px;"></div>
+
+            <div data-role="fieldcontain">
+                <label for="from">From</label>
+                <input type="text" id="from" value="Sheridan College, Oakville, ON Canada" />
+            </div>
+
+            <div data-role="fieldcontain">
+                <label for="to">To</label>
+                <input type="text" id="to" value="Air Canada Centre, Toronto, ON Canada" />
+            </div>
+
+            <div data-role="fieldcontain">
+                <label for="mode" class="select">Transportation method:</label>
+                <select name="select-choice-0" id="mode">
+                    <option value="DRIVING">Driving</option>
+                    <option value="WALKING">Walking</option>
+                    <option value="BICYCLING">Bicycling</option>
+                </select>
+            </div>
+
+            <a class="ui-btn ui-icon-search ui-btn-icon-bottom ui-corner-all ui-shadow-icon ui-btn-b" href="#" id="submit">Get directions</a>
+
+            <div id="results">
+                <div id="directions"></div>
+            </div>
+        </div>
+        <a href="#HomeScreen2" data-transition="slide" data-direction="reverse" class="ui-btn ui-icon-carat-l ui-btn-icon-left ui-corner-all ui-shadow-icon ui-btn-b">Back</a>
+
+        <div data-role="footer" data-theme="b">
+            <h1>Design and Prepared by Roshan Sahu</h1>
+        </div>
+    </div>
+</body>
+
+
+</htmL>

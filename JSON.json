@@ -1,0 +1,59 @@
+{
+    "FinalProject": {
+
+
+        "players": [
+            {
+                "firstname": "Steph",
+                "lastname": "Curry",
+                "team": "Golden State Warriors",
+                "stats": {
+                    "height": "1.91m",
+                    "weight": "86kg",
+                    "swag": "10/10",
+                    "picture": "steph"
+                }
+                },
+            {
+                "firstname": "LeBron",
+                "lastname": "James",
+                "team": "Los Angeles Lakers",
+                "stats": {
+                    "height": "2.03m",
+                    "weight": "113kg",
+                    "swag": "9/10",
+                    "picture": "lebron"
+
+                }
+            },
+            {
+                "firstname": "Serena",
+                "lastname": "Williams",
+                "team": "Independent",
+                "stats": {
+                    "height": "1.75m",
+                    "weight": "70kg",
+                    "swag": "11/10",
+                    "picture": "serena"
+
+                }
+            },
+            {
+                "firstname": "Lionel",
+                "lastname": "Mesi",
+                "team": "Barcelona",
+                "stats": {
+                    "height": "1.70m",
+                    "weight": "72kg",
+                    "swag": "8/10",
+                    "picture": "lionel"
+
+
+                }
+            }
+
+        ]
+
+    }
+
+}
